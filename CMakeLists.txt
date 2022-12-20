@@ -30,6 +30,7 @@ endforeach()
 
 include_directories(${SIMDJSON})
 include_directories(${CXXBRIDGE})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(cxxbridge STATIC IMPORTED)
 set_target_properties(cxxbridge PROPERTIES IMPORTED_LOCATION ${CXXBRIDGE_LIBS})
