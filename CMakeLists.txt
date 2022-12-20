@@ -4,7 +4,9 @@ project(simdjson_cxx)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CXXBRIDGE ${CMAKE_CURRENT_SOURCE_DIR}/target/cxxbridge)
+file(GLOB_RECURSE CXXBRIDGE_LIB ${CMAKE_INSTALL_PREFIX}/../../cxx-*/out/*${CMAKE_STATIC_LIBRARY_SUFFIX})
+set(SIMDJSON ${CMAKE_INSTALL_PREFIX}/../../../../..)
+set(CXXBRIDGE ${SIMDJSON}/target/cxxbridge)
 
 include(FetchContent)
 
@@ -16,11 +18,14 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(simdjson)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${SIMDJSON})
 include_directories(${CXXBRIDGE})
 
+add_library(cxxbridge STATIC IMPORTED)
+set_target_properties(cxxbridge PROPERTIES IMPORTED_LOCATION ${CXXBRIDGE_LIB})
 
 add_library(simdjson_cxx SHARED src/simdjson_cxx.cc ${CXXBRIDGE}/simdjson-rust/src/bridge.rs.cc)
-target_link_libraries(simdjson_cxx simdjson)
+target_link_libraries(simdjson_cxx simdjson cxxbridge)
 
 install(TARGETS simdjson_cxx)
+
